@@ -1,0 +1,23 @@
+{
+  "name": "MillisCounter",
+  "keywords": "MillisCounter",
+  "description": "Arduino library to count up and down time using the millis() function.",
+  "authors":
+  [
+    {
+      "name": "XbergCode",
+      "email": "xberg88@gmail.com",
+      "maintainer": true
+    }
+  ],
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/XbergCode/MillisCounter"
+  },
+  "version": "1.0.0",
+  "license": "MIT",
+  "frameworks": "arduino",
+  "platforms": "*",
+  "headers": "MillisCounter.h"
+}
