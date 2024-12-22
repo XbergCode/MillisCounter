@@ -6,27 +6,30 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-MillisCounter	KEYWORD1
+MillisCounter		KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 
 # Function's
-getCountUp	      KEYWORD2
-getCountDown	    KEYWORD2
-reset		          KEYWORD2
-isRunning		      KEYWORD2
+countUp			KEYWORD2
+countDown		KEYWORD2
+getCountUp		KEYWORD2
+getCountDown		KEYWORD2
+getCountDownIsDone	KEYWORD2
+reset			KEYWORD2
+isRunning		KEYWORD2
 
 # Variable's
-getSeconds	      KEYWORD2
-getMinutes	      KEYWORD2
-getHours    	    KEYWORD2
-getDays    		    KEYWORD2
-getMonths 	      KEYWORD2
-getYears    	    KEYWORD2
-getTotalDays 	    KEYWORD2
-getTotalSeconds   KEYWORD2
+getSeconds		KEYWORD2
+getMinutes		KEYWORD2
+getHours    		KEYWORD2
+getDays    		KEYWORD2
+getMonths 		KEYWORD2
+getYears    		KEYWORD2
+getTotalDays 		KEYWORD2
+getTotalSeconds    	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
