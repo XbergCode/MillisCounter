@@ -37,31 +37,57 @@ A ceramic oscillator is about 0.5% accurate.
 
 The following functions are implemented:
 
-* void reset(); ⬅️ Reset's the counter.
+### Include.  
+```cpp
+// Include the library.
+#include <MillisCounter.h>
 
-* bool isRunning(); ⬅️ Return's the counter status.
+// Set the library class object name.  
+MillisCounter cnt1;
+```
 
-* char* getCountUp(); ⬅️ Outputs C string. Max output string: "100.Y, 10.M, 10.D, 10.h, 10.m, 10.sec"
+### Reset.  
+```cpp
+void reset(); // Reset's the counter.
+```
 
-* char* getCountDown(const uint32_t _COUNTSECONDS); ⬅️ Outputs C string. Max output string: "100.Y, 100.D, 10.hour, 10.min, 10.sec"
+### Check.  
+```cpp
+bool isRunning(); // Return's the counter status.
+```
 
-* char* getCountDown(const uint8_t _SECONDS, const uint8_t _MINUTES, const uint8_t _HOURS, const uint16_t _DAYS, const uint8_t _YEARS); ⬅️ Send count down time in: seconds, minutes, hours, days & years 
+### Call.  
+```cpp
+void countUp(void); // Call the count up function.
+void countDown(const uint32_t _COUNTSECONDS); // Call the count down function.
+```
 
-* const uint8_t  getYears();
+### Get.  
+```cpp
+char* getCountUp(); // Outputs C string. Max output string: "100.Y, 10.M, 10.D, 10.h, 10.m, 10.sec"
 
-* const uint8_t  getMonths(); ⬅️ Only for getCountUp() ❕
+char* getCountDown(const uint32_t _COUNTSECONDS); // Outputs C string. Max output string: "100.Y, 100.D, 10.hour, 10.min, 10.sec"
 
-* const uint16_t  getDays();
+char* getCountDown(const uint8_t _SECONDS, const uint8_t _MINUTES, const uint8_t _HOURS, const uint16_t _DAYS, const uint8_t _YEARS); // Send count down time in: seconds, minutes, hours, days & years 
 
-* const uint8_t  getHours();
+void getCountDownIsDone(); // Get count down is done.
 
-* const uint8_t  getMinutes();
+const uint8_t  getYears();
 
-* const uint8_t  getSeconds();
+const uint8_t  getMonths(); // ⬅️ Only for getCountUp() ❕
 
-* const uint16_t getTotalDays();
+const uint16_t  getDays();
 
-* const uint32_t getTotalSeconds();
+const uint8_t  getHours();
+
+const uint8_t  getMinutes();
+
+const uint8_t  getSeconds();
+
+const uint16_t getTotalDays();
+
+const uint32_t getTotalSeconds();
+```
 
 
 ## Outputs
