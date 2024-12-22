@@ -1,13 +1,16 @@
 //    FILE: MillisCounter_Up.ino
 //  AUTHOR: XbergCode
-// VERSION: 1.0.0
+// VERSION: 1.1.0
 // PURPOSE: Arduino library to count up and down time using the millis() function.
 //     URL: https://github.com/XbergCode/MillisCounter
 
 
 // Millis Counter Library
 #include <MillisCounter.h>                                    // Millis Counter Library
-MillisCounter countUp;                                        // Set The Call Name
+MillisCounter countUp;                                        // Set The Object Name
+MillisCounter countUp1;                                       // Set The Object Name
+MillisCounter countUp2;                                       // Set The Object Name
+MillisCounter countUpCustom;                                  // Set The Object Name
 
 // Global Time String
 //char countUp_Str[38] = "No Time"; // 100.Y, 10.M, 10.D, 10.h, 10.m, 10.sec = 37.Characters
@@ -21,7 +24,7 @@ void setup() {
   
   // Run Count Up Timer
   bool runTheCounter = true;                       // Bool For The Counter Status
-  countUp.getCountUp();                            // Run The Counter
+  countUp.countUp();                               // Run The Counter
   delay(412UL);                                    // Delay For Some Time
   Serial.println(countUp.getCountUp());            // Print The Count Up Time
   countUp.reset();                                 // Reset The Counter
@@ -44,17 +47,16 @@ void loop() {
 // Count Up Function 1 - Max: 4294967295.sec = 136.years, 70.days, 6.hours, 28.min, 15.sec (49710.days)
 void runTheCountUp1() {          // Run The Count Up Function
   // Local Variables
-  MillisCounter countUp1;                                      // Set The Call Name
   const uint32_t MILLIS = millis();                            // Get The Millis Once Per Run
   char countUp_Str[38] = "Empty";                              // Local Buffer For The Time String
   
   // Simulate Something Turning On / Off
-  const uint32_t RunTheTimerForX = 1000UL * 10UL;              // Run The Function Every X Seconds
+  const uint32_t RUN_THE_TIMER_FOR_X = 1000UL * 10UL;          // Run The Function Every X Seconds
   static uint32_t RunTheTimer_Wait = MILLIS;                   // Keep Track Of The Time
   static bool runTheCounter = true;                            // Start/Stop The Counter
   
   // Simulate Something Turning On / Off
-  if (MILLIS - RunTheTimer_Wait >= RunTheTimerForX) {          // Wait For Timeout
+  if (MILLIS - RunTheTimer_Wait >= RUN_THE_TIMER_FOR_X) {      // Wait For Timeout
     RunTheTimer_Wait = MILLIS;                                 // Keep Track Of The Time
     
     // Stop The Counter < "Like if some light turns off"
@@ -70,9 +72,9 @@ void runTheCountUp1() {          // Run The Count Up Function
   }
   
   // Get And Print The Time
-  const uint32_t Function_Time = 1000UL;                       // Run The Function Every X Seconds
+  const uint32_t FUNCTION_TIME = 1000UL;                       // Run The Function Every X Seconds
   static uint32_t Function_Wait = 0UL;                         // Keep Track Of The Time
-  if (MILLIS - Function_Wait >= Function_Time) {               // Wait For Timeout
+  if (MILLIS - Function_Wait >= FUNCTION_TIME) {               // Wait For Timeout
     Function_Wait = MILLIS;                                    // Keep Track Of The Time
     if (runTheCounter) {                                       // If The Counter Is On
       strcpy(countUp_Str, countUp1.getCountUp());              // Make The Time String
@@ -85,17 +87,16 @@ void runTheCountUp1() {          // Run The Count Up Function
 // Count Up Function 2
 void runTheCountUp2() {          // Run The Count Up Function
   // Local Variables
-  MillisCounter countUp2;                                      // Set The Call Name
   const uint32_t MILLIS = millis();                            // Get The Millis Once Per Run
   char countUp_Str[38] = "Empty";                              // Local Buffer For The Time String
   
   // Simulate Something Turning On / Off
-  const uint32_t RunTheTimerForX = 1000UL * 12UL;              // Run The Function Every X Seconds
+  const uint32_t RUN_THE_TIMER_FOR_X = 1000UL * 12UL;          // Run The Function Every X Seconds
   static uint32_t RunTheTimer_Wait = MILLIS;                   // Keep Track Of The Time
   static bool runTheCounter = true;                            // Start/Stop The Counter
   
   // Simulate Something Turning On / Off
-  if (MILLIS - RunTheTimer_Wait >= RunTheTimerForX) {          // Wait For Timeout
+  if (MILLIS - RunTheTimer_Wait >= RUN_THE_TIMER_FOR_X) {      // Wait For Timeout
     RunTheTimer_Wait = MILLIS;                                 // Keep Track Of The Time
     
     // Stop The Counter < "Like if some light turns off"
@@ -111,9 +112,9 @@ void runTheCountUp2() {          // Run The Count Up Function
   }
 
   // Get And Print The Time
-  const uint32_t Function_Time = 1000UL;                       // Run The Function Every X Seconds
+  const uint32_t FUNCTION_TIME = 1000UL;                       // Run The Function Every X Seconds
   static uint32_t Function_Wait = 0UL;                         // Keep Track Of The Time
-  if (MILLIS - Function_Wait >= Function_Time) {               // Wait For Timeout
+  if (MILLIS - Function_Wait >= FUNCTION_TIME) {               // Wait For Timeout
     Function_Wait = MILLIS;                                    // Keep Track Of The Time
     if (runTheCounter) {                                       // If The Counter Is On
       strcpy(countUp_Str, countUp2.getCountUp());              // Make The Time String
@@ -128,17 +129,16 @@ void runTheCountUp2() {          // Run The Count Up Function
 // Count Up Function Custom Output String
 void runTheCountUp_Custom() {    // Run The Count Up Function
   // Local Variables
-  MillisCounter countUpCustom;                                 // Set The Call Name
   const uint32_t MILLIS = millis();                            // Get The Millis Once Per Run
   char countUp_Str[38] = "Empty";                              // Local Buffer For The Time String
   
   // Simulate Something Turning On / Off
-  const uint32_t RunTheTimerForX = 1000UL * 13UL;              // Run The Function Every X Seconds
+  const uint32_t RUN_THE_TIMER_FOR_X = 1000UL * 13UL;          // Run The Function Every X Seconds
   static uint32_t RunTheTimer_Wait = MILLIS;                   // Keep Track Of The Time
   static bool runTheCounter = true;                            // Start/Stop The Counter
   
   // Simulate Something Turning On / Off
-  if (MILLIS - RunTheTimer_Wait >= RunTheTimerForX) {          // Wait For Timeout
+  if (MILLIS - RunTheTimer_Wait >= RUN_THE_TIMER_FOR_X) {      // Wait For Timeout
     RunTheTimer_Wait = MILLIS;                                 // Keep Track Of The Time
     
     // Stop The Counter < "Like if some light turns off"
@@ -154,13 +154,13 @@ void runTheCountUp_Custom() {    // Run The Count Up Function
   }
   
   // Get And Print The Time
-  const uint32_t Function_Time = 1000UL;                       // Run The Function Every X Seconds
+  const uint32_t FUNCTION_TIME = 1000UL;                       // Run The Function Every X Seconds
   static uint32_t Function_Wait = 0UL;                         // Keep Track Of The Time
-  if (MILLIS - Function_Wait >= Function_Time) {               // Wait For Timeout
+  if (MILLIS - Function_Wait >= FUNCTION_TIME) {               // Wait For Timeout
     Function_Wait = MILLIS;                                    // Keep Track Of The Time
     if (runTheCounter) {                                       // If The Counter Is On
       // Call The Count Up Function
-      countUpCustom.getCountUp();                              // Call The Count Up Function
+      countUpCustom.countUp();                                 // Call The Count Up Function
       // Variables For The Custom String
       const uint8_t  _seconds  = countUpCustom.getSeconds();     // Get Seconds (0-59)
       const uint8_t  _minutes  = countUpCustom.getMinutes();     // Get Minutes (0-59)
