@@ -1,55 +1,22 @@
 //    FILE: MillisCounter.cpp
 //  AUTHOR: XbergCode
-// VERSION: 1.0.0
+// VERSION: 1.1.0
 // PURPOSE: Arduino library to count up and down time using the millis() function.
 //     URL: https://github.com/XbergCode/MillisCounter
 
 // Headers
-#include <Arduino.h>
 #include "MillisCounter.h"
 
 //------------------------------------- Private ------------------------------------------//
 
-// C String Class
-const uint8_t MillisCounter::_c_bufferSize = 38;    // Set the buffer size
+//const uint8_t MillisCounter::_c_bufferSize = 38;    // Set the buffer size
 char MillisCounter::_c_buffer[_c_bufferSize];       // Buffer for the time string
 
-// Private variables to hold the elapsed time.
-uint8_t  MillisCounter::_years = 0;                 // Time - Years      (0-136)
-uint8_t  MillisCounter::_months = 0;                // Time - Months     (0-11)
-uint16_t MillisCounter::_days = 0U;                 // Time - Days       (0-364)
-uint8_t  MillisCounter::_hours = 0;                 // Time - Hours      (0-23)
-uint8_t  MillisCounter::_minutes = 0;               // Time - Minutes    (0-59)
-uint8_t  MillisCounter::_seconds = 0;               // Time - Seconds    (0-59)
-uint16_t MillisCounter::_totaldays = 0U;            // Time - Total days (0-49710)
-
-// Private bool so we only change once each time.
-bool MillisCounter::_b_newDay = false;              // If its okay to change the day
-bool MillisCounter::_b_shortMonth = true;           // Short or Long months - Start with short month
-
-// Start mark, start time, total time, rollover time & status.
-bool MillisCounter::_setTheTime = true;             // Get The Start Millis Time Once Per Run
-uint32_t MillisCounter::_startMillis = 0UL;         // Save The Start Millis Time
-uint32_t MillisCounter::_totalSeconds = 0UL;        // Save The Total Seconds - 4,294,967,295.sec = 49,710.days
-uint32_t MillisCounter::_rolloverSeconds = 0UL;     // Save The Total Seconds If Millis Rollsover's
-uint32_t MillisCounter::_lastMILLIS = 0UL;          // Monitor Millis Rollover
-bool MillisCounter::_counterIsRunning = false;      // If The Counter Is Running
-
-//------------------------------------- Public -------------------------------------------//
-
-MillisCounter::MillisCounter() {}                   // Set the class call name
-
-// Get the time from the counter.
-const uint8_t  MillisCounter::getYears()        { return _years; }         // Get Years
-const uint8_t  MillisCounter::getMonths()       { return _months; }        // Get Months
-const uint16_t MillisCounter::getDays()         { return _days; }          // Get Days
-const uint8_t  MillisCounter::getHours()        { return _hours; }         // Get Hours
-const uint8_t  MillisCounter::getMinutes()      { return _minutes; }       // Get Minutes
-const uint8_t  MillisCounter::getSeconds()      { return _seconds; }       // Get Seconds
-const uint16_t MillisCounter::getTotalDays()    { return _totaldays; }     // Get Total Days
-const uint32_t MillisCounter::getTotalSeconds() { return (_totaldays * 86400UL) + (_hours * 3600UL) + (_minutes * 60UL) + _seconds; }  // Get Total Seconds
-
 //----------------------------------------------------------------------------------------//
+
+
+// Object Constructor
+MillisCounter::MillisCounter() {}                   // Object Constructor
 
 // Reset The Counter
 void MillisCounter::reset(void) {
@@ -67,6 +34,7 @@ void MillisCounter::reset(void) {
   _totaldays        = 0U;          // Reset Total Days
   _b_newDay         = false;       // Reset The If its okay to change the day bool
   _b_shortMonth     = true;        // Reset The Short or Long month bool
+  _countDownIsDone  = false;       // Flag If Count Down Is Done
 }
 
 // Counter Running Status
@@ -75,9 +43,7 @@ bool MillisCounter::isRunning(void) {
 }
 
 // Count Up
-// Max Output String: "100.Y, 10.M, 10.D, 10.h, 10.m, 10.sec" = 37.Characters
-// Max Runtime: 136.years, 70.days, 6.hours, 28.min, 15.sec (49710.days)
-char* MillisCounter::getCountUp(void) {
+void MillisCounter::countUp(void) {                 // Count Up
   // Count Up
   const uint32_t _MILLIS = millis();                       // Get The Millis Once Per Run
 
@@ -137,11 +103,17 @@ char* MillisCounter::getCountUp(void) {
     _days = 0;                                             // Reset days
     _months = _months + 1;                                 // Add to months count
   }
+}
+
+// Max Output String: "100.Y, 10.M, 10.D, 10.h, 10.m, 10.sec" = 37.Characters
+// Max Runtime: 136.years, 70.days, 6.hours, 28.min, 15.sec (49710.days)
+char* MillisCounter::getCountUp(void) {
+  countUp();                                               // Call The countUp
 
   // Make the time string
   if (_years == 0U) {                                      // Run Time Is Less Than One Year
     if (_seconds == 0U && _minutes == 0U && _hours == 0U && _days == 0U && _months == 0U)
-      sprintf_P(_c_buffer, PSTR("%lu.milliseconds"), _MILLIS - _startMillis);
+      sprintf_P(_c_buffer, PSTR("%lu.milliseconds"), millis() - _startMillis);
     else if (_minutes == 0U && _hours == 0U && _days == 0U && _months == 0U)
       sprintf_P(_c_buffer, PSTR("%u.seconds"), _seconds);
     else if (_minutes == 1U && _hours == 0U && _days == 0U && _months == 0U)
@@ -163,14 +135,11 @@ char* MillisCounter::getCountUp(void) {
   return _c_buffer;                                        // Return The Time String
 }
 
+
 // Count Down
 // Send:
 // _COUNTSECONDS < Total Seconds To Count Down To
-// Max Output String: "100.Y, 100.D, 10.hour, 10.min, 10.sec" = 37.Characters
-// Max Runtime: 136.years, 70.days, 6.hours, 28.min, 15.sec (49710.days)
-char* MillisCounter::getCountDown(const uint32_t _COUNTSECONDS) {
-  // Count Down
-  const char _LASTSTRING[] = "Done.";                                 // The Last Time String
+void MillisCounter::countDown(const uint32_t _COUNTSECONDS) {
   // Variables 
   const uint32_t _MILLIS = millis();                                  // Get The Millis Once Per Run
   // Count For Millis
@@ -199,9 +168,8 @@ char* MillisCounter::getCountDown(const uint32_t _COUNTSECONDS) {
   
   // Time Is Up
   if (_SECONDSLEFT == 0UL || _SECONDSLEFT > _COUNTFORMILLIS) {        // Time Is Up
-    reset();                                                          // Reset
-    strcpy(_c_buffer, _LASTSTRING);                                   // Make The Last String
-    return _c_buffer;                                                 // Return The Last String
+    //reset();                                                          // Reset
+    _countDownIsDone = true;                                          // Flag If Count Down Is Done
   }
   
   // Convert Total Seconds To: Seconds, Minutes, Hours, Days And Years
@@ -211,7 +179,36 @@ char* MillisCounter::getCountDown(const uint32_t _COUNTSECONDS) {
   _totaldays = _SECONDSLEFT  / 86400UL;                               // Calculate The Total Days
   _days      = (_SECONDSLEFT / 86400UL) % 365UL;                      // Calculate The Days
   _years     = _SECONDSLEFT  / 31536000UL;                            // Calculate The Years
+
+  // Count Down Is Done - Set The Time
+  if (_countDownIsDone) {                                             // Count Down Is Done - Set The Time
+    _seconds   = 0;                                                   // Set The Seconds
+    _minutes   = 0;                                                   // Set The Minutes
+    _hours     = 0;                                                   // Set The Hours
+    _totaldays = 0;                                                   // Set The Total Days
+    _days      = 0U;                                                  // Set The Days
+    _years     = 0;                                                   // Set The Years
+  }
+}
+
+// Send With: Seconds, Minutes, Hours, Days & Years
+void MillisCounter::countDown(const uint8_t _SECONDS, const uint8_t _MINUTES, const uint8_t _HOURS, const uint16_t _DAYS, const uint8_t _YEARS) {
+  countDown((_YEARS*31536000UL) + (_DAYS*86400UL) + (_HOURS*3600UL) + (_MINUTES*60UL) + _SECONDS);
+}
+
+// Max Output String: "100.Y, 100.D, 10.hour, 10.min, 10.sec" = 37.Characters
+// Max Runtime: 136.years, 70.days, 6.hours, 28.min, 15.sec (49710.days)
+char* MillisCounter::getCountDown(const uint32_t _COUNTSECONDS) {
+  // Count Down
+  const char _LASTSTRING[] = "Done.";                                 // The Last Time String
+  countDown(_COUNTSECONDS);                                           // Call The countDown
   
+  // Count Down Is Done
+  if (_countDownIsDone) {                                             // Count Down Is Done
+    strcpy(_c_buffer, _LASTSTRING);                                   // Make The Last String
+    return _c_buffer;                                                 // Return The Last String
+  }
+
   // Make The Time String
   if (_years == 0U) {                                                 // Less Than One Year
     if (_days == 0U && _hours == 0U && _minutes == 0U && _seconds <= 1U)
